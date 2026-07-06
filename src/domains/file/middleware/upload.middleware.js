@@ -1,31 +1,51 @@
 import multer from "multer";
-import ApiError from "../../../shared/utils/ApiError.js";
+import path from "path";
+import ApiError from "../utils/ApiError.js";
 
 const storage = multer.memoryStorage();
 
-const fileFilter = (req, file, cb) => {
-  const allowedMimeTypes = [
-    "image/jpeg",
-    "image/png",
-    "image/webp",
-    "application/pdf",
-  ];
+const allowedMimeTypes = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "application/pdf",
+];
 
-  if (allowedMimeTypes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new ApiError(400, "Unsupported file type"), false);
-  }
+const allowedExtensions = [
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".webp",
+  ".pdf",
+];
+
+const isValidFilename = (filename) => {
+  return /^[a-zA-Z0-9._ -]+$/.test(filename);
 };
 
-const upload = multer({
+const fileFilter = (req, file, cb) => {
+  if (!allowedMimeTypes.includes(file.mimetype)) {
+    return cb(new ApiError(400, "Unsupported file type"));
+  }
+
+  const extension = path.extname(file.originalname).toLowerCase();
+
+  if (!allowedExtensions.includes(extension)) {
+    return cb(new ApiError(400, "Invalid file extension"));
+  }
+
+  if (!isValidFilename(file.originalname)) {
+    return cb(new ApiError(400, "Invalid filename"));
+  }
+
+  cb(null, true);
+};
+
+export const upload = multer({
   storage,
-
-  limits: {
-    fileSize: 20 * 1024 * 1024,
-  },
-
   fileFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10 MB
+    files: 10,
+  },
 });
-
-export default upload;

@@ -24,6 +24,9 @@ const authenticate = async (req, res, next) => {
 
     const payload =
       jwtProvider.verifyToken(token);
+      if (!payload || !payload.id || !payload.role) {
+      return next(new ApiError(401, "Invalid token payload"));
+    }
 
     const user =
       await userRepository.findById(

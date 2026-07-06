@@ -11,11 +11,13 @@ import {
 } from "../validators/auth.validator.js";
 
 import validate from "../../../shared/middleware/validation.middleware.js";
+import { authRateLimiter } from "../../../shared/middleware/rateLimiter.middleware.js";
 
 const router = Router();
 
 router.post(
   "/register",
+  authRateLimiter,
   registerValidator,
   validate,
   register
@@ -23,6 +25,7 @@ router.post(
 
 router.post(
   "/login",
+  authRateLimiter,
   loginValidator,
   validate,
   login
