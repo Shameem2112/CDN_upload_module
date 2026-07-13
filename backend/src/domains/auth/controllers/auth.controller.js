@@ -5,6 +5,12 @@ import authService from "../services/auth.service.js";
 
 export const register = asyncHandler(async (req, res) => {
   const result = await authService.register(req.body);
+  res.cookie("token", result.token, {
+    httpOnly: true,
+    secure: false, // true in production with HTTPS
+    sameSite: "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  });
 
   return ApiResponse.success(
     res,
@@ -17,6 +23,13 @@ export const register = asyncHandler(async (req, res) => {
 export const login = asyncHandler(async (req, res) => {
   const result = await authService.login(req.body);
 
+res.cookie("token", result.token, {
+  httpOnly: true,
+  secure: false,      // true in production with HTTPS
+  sameSite: "lax",
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+});
+
   return ApiResponse.success(
     res,
     200,
@@ -28,11 +41,19 @@ export const login = asyncHandler(async (req, res) => {
 
 export const getCurrentUser = asyncHandler(async (req, res) => {
   const user = await authService.getCurrentUser(req.user.id);
-  console.log("getCurrentUser - user fetched:", user);
   return ApiResponse.success(
     res,
     200,
     "Current user fetched successfully",
     user
+  );
+});
+export const logout = asyncHandler(async (req, res) => {
+  res.clearCookie("token");
+
+  return ApiResponse.success(
+    res,
+    200,
+    "Logged out successfully"
   );
 });

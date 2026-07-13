@@ -52,8 +52,11 @@ async uploadMultiple(files, userId) {
 
   return uploadedFiles;
 }
-async getAllFiles() {
-  return await fileRepository.findAll();
+async getAllFiles(userId, page = 1, limit = 9) {
+  page = Number(page);
+  limit = Number(limit);
+
+  return await fileRepository.findByUser(userId, page, limit);
 }
 async getFileById(id) {
   const file = await fileRepository.findById(id);

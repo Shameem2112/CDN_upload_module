@@ -9,25 +9,36 @@ function Dashboard() {
   }, []);
 
   const loadFiles = async () => {
-    try {
-      const res = await fileService.getFiles();
-      setFiles(res.data.data);
-    } catch (err) {
-      console.log(err);
+  try {
+    const res = await fileService.getFiles();
+
+    const data = res.data.data;
+
+    // Supports both old and new API responses
+    if (Array.isArray(data)) {
+      setFiles(data);
+    } else {
+      setFiles(data.files || []);
     }
-  };
+  } catch (err) {
+    console.error(err);
+    setFiles([]);
+  }
+};
 
-  const totalFiles = files.length;
+ const totalFiles = Array.isArray(files) ? files.length : 0;
 
-  const totalImages = files.filter((file) =>
-    file.mimeType.startsWith("image")
-  ).length;
+const totalImages = Array.isArray(files)
+  ? files.filter(file => file.mimeType?.startsWith("image")).length
+  : 0;
 
-  const totalStorage = (
-    files.reduce((sum, file) => sum + file.size, 0) /
-    1024 /
-    1024
-  ).toFixed(2);
+const totalStorage = Array.isArray(files)
+  ? (
+      files.reduce((sum, file) => sum + (file.size || 0), 0) /
+      1024 /
+      1024
+    ).toFixed(2)
+  : "0.00";
 
   return (
     <div className="space-y-8">

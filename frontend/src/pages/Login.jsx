@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-
+import { Link, useNavigate } from "react-router-dom";
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
-
-import { useNavigate } from "react-router-dom";
+import {zodResolver} from "@hookform/resolvers/zod";
+import { loginSchema } from "../validations/auth.schema";
 import { useAuth } from "../context/AuthContext";
 function Login() {
 const [loading, setLoading] = useState(false);
@@ -13,10 +13,12 @@ const [loading, setLoading] = useState(false);
 const navigate = useNavigate();
 const { login } = useAuth();
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  register,
+  handleSubmit,
+  formState: { errors },
+} = useForm({
+  resolver: zodResolver(loginSchema),
+});
 
   const onSubmit = async (data) => {
     try {
@@ -49,9 +51,7 @@ navigate("/dashboard");
             type="email"
             placeholder="Enter Email"
             error={errors.email?.message}
-            {...register("email", {
-              required: "Email is required",
-            })}
+            {...register("email")}
           />
 
           <Input
@@ -59,9 +59,7 @@ navigate("/dashboard");
             type="password"
             placeholder="Enter Password"
             error={errors.password?.message}
-            {...register("password", {
-              required: "Password is required",
-            })}
+            {...register("password")}
           />
 
           <Button
@@ -71,6 +69,15 @@ navigate("/dashboard");
             Login
           </Button>
         </form>
+        <p className="mt-4 text-center text-gray-500">
+          Don't have an account?{" "}
+          <span
+            className="cursor-pointer text-blue-600 hover:underline"
+            onClick={() => navigate("/register")}
+          >
+            Register
+          </span>
+        </p>
       </div>
     </div>
   );

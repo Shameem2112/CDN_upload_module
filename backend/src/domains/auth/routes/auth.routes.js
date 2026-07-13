@@ -3,6 +3,7 @@ import { Router } from "express";
 import {
   register,
   login,
+  logout,
   getCurrentUser,
 } from "../controllers/auth.controller.js";
 
@@ -34,6 +35,6 @@ router.post(
   login
 );
 router.get("/me", authenticate, getCurrentUser);
-
+router.post("/logout", authenticate, logout);
 
 export default router;

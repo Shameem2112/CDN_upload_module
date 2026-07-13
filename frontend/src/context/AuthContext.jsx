@@ -24,32 +24,23 @@ export function AuthProvider({ children }) {
 
   const login = async (data) => {
     const res = await authService.login(data);
-    localStorage.setItem(
-  "token",
-  res.data.data.token
-);
+
+    // The backend stores the JWT in an HttpOnly cookie.
+    // We only need to store the user in React state.
     setUser(res.data.data.user);
+
     return res;
   };
-// const login = async (data) => {
-//   const res = await authService.login(data);
 
-//   console.log("LOGIN RESPONSE:", res.data);
-
-//   localStorage.setItem("token", res.data.data.token);
-
-//   console.log(
-//     "TOKEN SAVED:",
-//     localStorage.getItem("token")
-//   );
-
-//   setUser(res.data.data.user);
-
-//   return res;
-// };
   const logout = async () => {
-    await authService.logout();
-    setUser(null);
+    try {
+      await authService.logout();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      // Clear the logged-in user from React state.
+      setUser(null);
+    }
   };
 
   return (

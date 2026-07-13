@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
+import coookieParser from "cookie-parser";
 
 import notFound from "./shared/middleware/notFound.middleware.js";
 import errorMiddleware from "./shared/middleware/error.middleware.js";
@@ -24,7 +25,7 @@ app.use(express.json({ limit: "10mb" }));
 
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-
+app.use(coookieParser());
 app.use(morgan("dev"));
 app.use("/api/auth", authRoutes);
 

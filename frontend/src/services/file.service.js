@@ -7,8 +7,8 @@ const fileService = {
   uploadMultiple: (formData) =>
     api.post("/files/upload/multiple", formData),
 
-  getFiles: () => api.get("/files"),
-
+getFiles: (page = 1, limit = 9) =>
+  api.get(`/files?page=${page}&limit=${limit}`),
   getFile: (id) => api.get(`/files/${id}`),
 
   updateFile: (id, data) =>

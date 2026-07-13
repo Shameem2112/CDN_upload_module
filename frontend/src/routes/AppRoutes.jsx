@@ -7,13 +7,14 @@ import Upload from "../pages/Upload";
 import Files from "../pages/Files";
 import Profile from "../pages/Profile";
 import EditFile from "../pages/EditFile";
-
+import Register from "../pages/Register";
 import ProtectedRoute from "./ProtectedRoute";
 
 function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
+      <Route path="/register" element={<Register />} />
 
       <Route
         path="/dashboard"

@@ -24,8 +24,24 @@ export const uploadMultiple = asyncHandler(async (req, res) => {
   );
 });
 
+// export const getAllFiles = asyncHandler(async (req, res) => {
+//   const files = await fileService.getAllFiles(req.user.id);
+
+//   return ApiResponse.success(
+//     res,
+//     200,
+//     "Files fetched successfully",
+//     files
+//   );
+// });
 export const getAllFiles = asyncHandler(async (req, res) => {
-  const files = await fileService.getAllFiles();
+  const { page = 1, limit = 9 } = req.query;
+
+  const files = await fileService.getAllFiles(
+    req.user.id,
+    page,
+    limit
+  );
 
   return ApiResponse.success(
     res,

@@ -5,10 +5,26 @@ class FileRepository {
     return await File.create(data);
   }
 
-  async findAll() {
-    return await File.find().sort({ createdAt: -1 });
-  }
+  
+  async findByUser(userId, page = 1, limit = 9) {
+  const skip = (page - 1) * limit;
 
+  const [files, total] = await Promise.all([
+    File.find({ uploadedBy: userId })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
+
+    File.countDocuments({ uploadedBy: userId }),
+  ]);
+
+  return {
+    files,
+    total,
+    page,
+    pages: Math.ceil(total / limit),
+  };
+}
   async findById(id) {
     return await File.findById(id);
   }

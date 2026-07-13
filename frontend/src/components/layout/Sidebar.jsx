@@ -13,6 +13,7 @@ function Sidebar() {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -61,12 +62,15 @@ function Sidebar() {
 
       <div className="border-t p-4">
         <button
-          onClick={handleLogout}
-          className="flex w-full items-center gap-3 rounded-lg p-3 text-red-600 transition hover:bg-red-50"
-        >
-          <LogOut size={20} />
-          <span>Logout</span>
-        </button>
+  onClick={() => {
+    logout();
+    navigate("/");
+  }}
+  className="flex w-full items-center gap-3 rounded-lg p-3 text-red-600 hover:bg-red-50"
+>
+  <LogOut size={20} />
+  Logout
+</button>
       </div>
     </aside>
   );
